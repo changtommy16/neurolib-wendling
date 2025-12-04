@@ -2,7 +2,8 @@ import numpy as np
 
 from . import loadDefaultParams as dp
 from . import timeIntegration as ti
-from ..model import Model
+# Use absolute import for standalone package (not relative import)
+from neurolib.models.model import Model
 
 
 class WendlingModel(Model):

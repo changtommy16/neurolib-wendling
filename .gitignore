@@ -53,6 +53,3 @@ test_output/
 *.tar.gz
 
 # Developer tools
-setup_package.py
-DEVELOPER.md
-PACKAGE_INFO.txt

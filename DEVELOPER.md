@@ -425,4 +425,120 @@ git add . && git commit -m "描述" && git push
 
 **记住：** `setup_package.py` 是你的自动化助手，善用它！
 
+---
+
+## ⚠️ 重要：导入路径问题 (2024-12-04)
+
+### 问题描述
+
+独立包 (`neurolib-wendling`) 中使用**相对导入**会导致 auto-registration 失败。
+
+**症状：**
+```python
+import neurolib_wendling
+from neurolib.models.wendling import WendlingModel  # ModuleNotFoundError!
+```
+
+**错误信息：**
+```
+Warning: Could not register wendling to neurolib namespace: 
+  No module named 'neurolib_wendling.utils'
+ModuleNotFoundError: No module named 'neurolib.models.wendling'
+```
+
+---
+
+### 根本原因
+
+**包结构不同导致导入路径要求不同：**
+
+| 位置 | 包结构 | 应使用 |
+|------|--------|--------|
+| **开发环境** | `neurolib/models/wendling/` | 相对导入 `from ...utils` |
+| **独立包** | `neurolib_wendling/models/wendling/` | 绝对导入 `from neurolib.utils` |
+
+**问题文件：**
+1. `loadDefaultParams.py` - 第2行
+2. `model.py` - 第5行
+
+---
+
+### 解决方案
+
+**已修改的文件（独立包版本）：**
+
+#### 1. `neurolib_wendling/models/wendling/loadDefaultParams.py`
+```python
+import numpy as np
+# Use absolute import for standalone package (not relative import)
+from neurolib.utils.collections import dotdict  # ← 改成绝对导入
+```
+
+#### 2. `neurolib_wendling/models/wendling/model.py`
+```python
+import numpy as np
+
+from . import loadDefaultParams as dp
+from . import timeIntegration as ti
+# Use absolute import for standalone package (not relative import)
+from neurolib.models.model import Model  # ← 改成绝对导入
+```
+
+**注意：开发环境的文件保持相对导入不变！**
+
+---
+
+### 为什么不用 setup_package.py 自动转换？
+
+因为：
+1. 需要转换的只有2处，手动修改简单可控
+2. setup_package.py 主要用于文件复制，不做代码转换
+3. 保持工具简单，避免复杂的代码解析逻辑
+
+---
+
+### 验证方法
+
+测试环境中运行：
+```bash
+cd c:\test_wendling
+.\myenv\Scripts\python.exe -c "
+import neurolib_wendling
+from neurolib.models.wendling import WendlingModel
+import numpy as np
+Cmat = np.eye(3)
+Dmat = np.ones((3,3))*10
+model = WendlingModel(Cmat=Cmat, Dmat=Dmat)
+model.params['duration'] = 100
+model.run()
+print(f'✓ Success! Output: {model.y1.shape}')
+"
+```
+
+**预期输出：** `✓ Success! Output: (3, 1000)`
+
+---
+
+### 开发工作流更新
+
+```bash
+# 1. 在开发环境修改（使用相对导入）
+vim c:\Epilepsy_project\Neurolib_desktop\Neurolib_package\neurolib\models\wendling\*.py
+
+# 2. 同步到独立包（setup_package.py 会复制文件）
+cd neurolib-wendling-package
+python setup_package.py
+
+# 3. 手动检查并修正这2个文件的导入（如果被覆盖）
+#    - neurolib_wendling/models/wendling/loadDefaultParams.py
+#    - neurolib_wendling/models/wendling/model.py
+
+# 4. 测试并推送
+git add .
+git commit -m "Fix: import paths for standalone package"
+git push
+```
+
+---
+
 最后更新：2024-12-04

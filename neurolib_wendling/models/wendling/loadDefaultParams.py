@@ -1,5 +1,6 @@
 import numpy as np
-from ...utils.collections import dotdict
+# Use absolute import for standalone package (not relative import)
+from neurolib.utils.collections import dotdict
 
 
 def generateRandomICs(N, seed=None):
