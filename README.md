@@ -119,9 +119,16 @@ MIT License (same as neurolib)
 ## Citation
 
 If you use this model in your research, please cite:
+- Chang, H. (2025). neurolib-wendling: neurolib implementation of the Wendling neural mass model [Computer software]. https://doi.org/10.5281/zenodo.17810152
 
+You should also cite the original model and framework:
 ```
-Wendling, F., Bartolomei, F., Bellanger, J. J., & Chauvel, P. (2002). Epileptic fast activity can be explained by a model of impaired GABAergic dendritic inhibition. The European journal of neuroscience, 15(9), 1499–1508. https://doi.org/10.1046/j.1460-9568.2002.01985.x
+- Wendling F, Bellanger JJ, Bartolomei F, Chauvel P (2000).
+  Relevance of nonlinear lumped-parameter models in the analysis of depth-EEG epileptic signals.
+  *Biological Cybernetics*, 83(4), 367–378.
+- Cakan C, Jajcay N, Obermayer K (2023).
+  neurolib: A Simulation Framework for Whole-Brain Neural Mass Modeling.
+  *Cognitive Computation*, 15, 1132–1152.
 ```
 
 ## Developer Guide
