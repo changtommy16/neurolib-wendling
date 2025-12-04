@@ -20,7 +20,7 @@ pip install neurolib
 # Clone and install this extension
 git clone https://github.com/changtommy16/neurolib-wendling.git
 cd neurolib-wendling-package
-pip install -e .
+pip install -e . #please do not forget this "." 
 ```
 
 
