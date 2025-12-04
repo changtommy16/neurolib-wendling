@@ -51,3 +51,6 @@ test_output/
 # Distribution
 *.whl
 *.tar.gz
+
+# Developer tools
+setup_package.py

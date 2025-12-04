@@ -11,23 +11,18 @@ Wendling neural mass model extension for [neurolib](https://github.com/neurolib-
 
 ## Installation
 
-### Option 1: Install from source (recommended for now)
+### Install from source (recommended for now)
 
 ```bash
 # Install original neurolib first
 pip install neurolib
 
 # Clone and install this extension
-git clone <your-repo-url>
+git clone https://github.com/changtommy16/neurolib-wendling.git
 cd neurolib-wendling-package
 pip install -e .
 ```
 
-### Option 2: Direct pip install (after publishing to PyPI)
-
-```bash
-pip install neurolib neurolib-wendling
-```
 
 ## Quick Start
 
@@ -126,10 +121,12 @@ MIT License (same as neurolib)
 If you use this model in your research, please cite:
 
 ```
-Wendling, F., Bartolomei, F., Bellanger, J. J., & Chauvel, P. (2002).
-Epileptic fast activity can be explained by a model of impaired GABAergic dendritic inhibition.
-European Journal of Neuroscience, 15(9), 1499-1508.
+Wendling, F., Bartolomei, F., Bellanger, J. J., & Chauvel, P. (2002). Epileptic fast activity can be explained by a model of impaired GABAergic dendritic inhibition. The European journal of neuroscience, 15(9), 1499–1508. https://doi.org/10.1046/j.1460-9568.2002.01985.x
 ```
+
+## Developer Guide
+
+For package development, version control, and publishing workflow, see **[DEVELOPER.md](DEVELOPER.md)**.
 
 ## Contributing
 
