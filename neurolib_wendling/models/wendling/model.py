@@ -2,7 +2,7 @@ import numpy as np
 
 from . import loadDefaultParams as dp
 from . import timeIntegration as ti
-from neurolib.models.model import Model
+from ..model import Model
 
 
 class WendlingModel(Model):

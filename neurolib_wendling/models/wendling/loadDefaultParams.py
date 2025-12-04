@@ -1,5 +1,5 @@
 import numpy as np
-from neurolib.utils.collections import dotdict
+from ...utils.collections import dotdict
 
 
 def generateRandomICs(N, seed=None):

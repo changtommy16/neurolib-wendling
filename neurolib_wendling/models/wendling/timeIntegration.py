@@ -4,7 +4,29 @@ from numba import njit
 
 from neurolib.utils import model_utils as mu
 
-
+# Backward compatibility: Add computeDelayMatrix if not available
+# PyPI neurolib 0.6.2 has incomplete model_utils.py (missing this function)
+# This patch ensures compatibility with all neurolib versions
+if not hasattr(mu, 'computeDelayMatrix'):
+    def _computeDelayMatrix(lengthMat, signalV, segmentLength=1):
+        """
+        Compute delay matrix from fiber length matrix and signal velocity.
+        Backward compatibility for older neurolib versions.
+        
+        :param lengthMat: Connection length matrix in segments
+        :param signalV: Signal velocity in m/s
+        :param segmentLength: Length of single segment in mm
+        :return: Delay matrix in ms
+        """
+        normalizedLenMat = lengthMat * segmentLength
+        if signalV > 0:
+            Dmat = normalizedLenMat / signalV  # Delays in ms
+        else:
+            Dmat = lengthMat * 0.0
+        return Dmat
+    
+    mu.computeDelayMatrix = _computeDelayMatrix
+    
 def timeIntegration(params):
     """Time integration for Wendling Neural Mass Model.
     
