@@ -1,13 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "neurolib-wendling: neurolib implementation of the Wendling neural mass model"
+authors:
+  - family-names: "Chang"
+    given-names: "Han-Jen"
 version: "0.1.2"
 date-released: "2025-12-04"
+license: "MIT"
+repository-code: "https://github.com/changtommy16/neurolib-wendling"
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.17810152"  
+    value: "10.5281/zenodo.17810152"
 preferred-citation:
   type: software
-  title: "neurolib-wendling"
+  title: "neurolib-wendling: neurolib implementation of the Wendling neural mass model"
   authors:
     - family-names: "Chang"
       given-names: "Han-Jen"
   year: 2025
   doi: "10.5281/zenodo.17810152"
+  url: "https://github.com/changtommy16/neurolib-wendling"
