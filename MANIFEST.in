@@ -1,0 +1,5 @@
+include README.md
+include LICENSE
+include requirements.txt
+recursive-include neurolib_wendling *.py *.md
+recursive-include tutorials *.ipynb
