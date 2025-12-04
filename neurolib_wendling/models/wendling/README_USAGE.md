@@ -58,7 +58,7 @@ signals = model.y1 - model.y2 - model.y3  # PSP (pyramidal neuron output)
 # For whole-brain modeling
 model = WendlingModel(Cmat, Dmat, heterogeneity=0.30)
 # → Generates: B = [25.3, 18.7, 22.1, ...] (random)
-# → Don't overwrite! Use these values directly ✅
+# → Don't overwrite! Use these values directly 
 model.run()
 ```
 
@@ -67,7 +67,7 @@ model.run()
 # For manual type assignment
 model = WendlingModel(Cmat, Dmat, heterogeneity=0.01)
 # → Generates: B = [22.04, 21.85, ...] (random, but we don't want)
-# → Overwrite with exact values ✅
+# → Overwrite with exact values 
 model.params['B'] = np.array([50, 25, 15, ...])
 # → Now: B = [50, 25, 15, ...] (our values!)
 model.run()
@@ -113,7 +113,25 @@ model = WendlingModel(Cmat, Dmat, random_init=True)
 
 ---
 
-### 3. seed (Random Seed)
+### 3. p_sigma is not vectorized
+
+```python
+# Limitation: p_sigma is always scalar
+model.params['p_sigma'] = 2.0  # Shared by all nodes
+
+# ❌ Cannot do this:
+model.params['p_sigma'] = np.array([2.0, 30.0, 2.0, ...])  # Not supported
+```
+
+**Impact**: Cannot mix Wendling types requiring different p_sigma values in same network
+- Type3, Type6 need `p_sigma = 2.0` (low noise)
+- Type1, Type2, Type4, Type5 need `p_sigma = 30.0` (high noise)
+
+**Workaround**: Only mix types that require same p_sigma value
+
+---
+
+### 4. seed (Random Seed)
 
 **Purpose**: Ensures reproducible results
 
@@ -187,7 +205,7 @@ model.params['p_mean'] = np.array([90, 90, 90, 90, 90, 90])
 model.params['p_sigma'] = 2.0  # Scalar (shared by all nodes)
 
 # Verify: Parameters are now fixed
-print(model.params['B'])  # → [50, 25, 15, 15, 50, 50] ✅
+print(model.params['B'])  # → [50, 25, 15, 15, 50, 50] 
 
 model.params['duration'] = 10000
 model.params['dt'] = 0.1
@@ -197,7 +215,7 @@ model.params['K_gl'] = 0.0  # or 0.15 for coupling
 model.run()
 
 # Check again: Parameters stayed fixed!
-print(model.params['B'])  # → [50, 25, 15, 15, 50, 50] ✅ (unchanged)
+print(model.params['B'])  # → [50, 25, 15, 15, 50, 50]  (unchanged)
 ```
 
 **Key takeaway**: 
@@ -254,8 +272,8 @@ signals = model.y1 - model.y2 - model.y3  # shape: (80, 100000)
 | Scenario | heterogeneity | Manual override? | Random variation used? | Purpose |
 |----------|---------------|------------------|------------------------|---------|
 | **Single-node** | 0.0 | Set manually | N/A (scalar mode) | Testing specific types |
-| **Manual types** | 0.01 | ✅ Override | ❌ No (overwritten) | We need vectorization only |
-| **Whole-brain** | 0.30 | ❌ Keep random | ✅ **YES!** | Realistic brain diversity |
+| **Manual types** | 0.01 | Override | No (overwritten) | We need vectorization only |
+| **Whole-brain** | 0.30 | Keep random | **YES!** | Realistic brain diversity |
 
 **The key logic**:
 - `heterogeneity > 0` always generates random variation during initialization
@@ -297,23 +315,23 @@ model.run()
 ```
 
 **Key points**:
-- ✅ heterogeneity generates initial random values during `__init__()`
-- ✅ If you don't set manually → random values are used
-- ✅ If you set manually → your values overwrite the random values
-- ✅ Once set (either way), parameters stay fixed during `model.run()`
+- heterogeneity generates initial random values during `__init__()`
+- If you don't set manually → random values are used
+- If you set manually → your values overwrite the random values
+- Once set (either way), parameters stay fixed during `model.run()`
 
 ---
 
 ### 2. random_init is critical for multi-node networks
 
 ```python
-# ❌ Wrong: multi-node + random_init=False
+# Wrong: multi-node + random_init=False
 model = WendlingModel(Cmat, Dmat, random_init=False)
 model.params['B'] = np.array([50, 50, 50])  # high-B type
 model.run()
 # → Signals decay to flat line!
 
-# ✅ Correct: multi-node + random_init=True
+# Correct: multi-node + random_init=True
 model = WendlingModel(Cmat, Dmat, random_init=True)
 model.params['B'] = np.array([50, 50, 50])
 model.run()
@@ -324,21 +342,22 @@ model.run()
 
 ---
 
-### 3. p_sigma 未向量化
+### 3. p_sigma is not vectorized
 
 ```python
-# 限制：p_sigma 始终是标量
-model.params['p_sigma'] = 2.0  # 所有节点共用
+# Limitation: p_sigma is always scalar
+model.params['p_sigma'] = 2.0  # Shared by all nodes
 
-# ❌ 无法这样做：
-model.params['p_sigma'] = np.array([2.0, 30.0, 2.0, ...])  # 不支持
+# Cannot do this:
+model.params['p_sigma'] = np.array([2.0, 30.0, 2.0, ...])  # Not supported
 ```
 
-**影响**：不能在同一网络中混用需要不同 p_sigma 的 Wendling types
-- Type3, Type6 需要 `p_sigma = 2.0`（低噪声）
-- Type1, Type2, Type4, Type5 需要 `p_sigma = 30.0`（高噪声）
+**Impact**: Currently cannot mix Wendling types requiring different p_sigma values in same network
+e.g.,
+- Type3, Type6 need `p_sigma = 2.0` (low noise)
+- Type1, Type2, Type4, Type5 need `p_sigma = 30.0` (high noise)
 
-**变通方案**：只混用需要相同 p_sigma 的 types
+**Workaround**: Only mix types that require same p_sigma value
 
 ---
 
@@ -346,14 +365,14 @@ model.params['p_sigma'] = np.array([2.0, 30.0, 2.0, ...])  # 不支持
 
 | Parameter | Vectorized? | Condition | Manual Override |
 |-----------|-------------|-----------|-----------------|
-| B | ✅ | heterogeneity > 0 | ✅ Yes |
-| G | ✅ | heterogeneity > 0 | ✅ Yes |
-| A | ✅ | heterogeneity > 0 | ✅ Yes |
-| p_mean | ✅ | heterogeneity > 0 | ✅ Yes |
-| p_sigma | ❌ | Always scalar | ❌ No |
-| K_gl | ❌ | Always scalar | ✅ Yes |
-| duration | ❌ | Always scalar | ✅ Yes |
-| dt | ❌ | Always scalar | ✅ Yes |
+| B | | heterogeneity > 0 | Yes |
+| G | | heterogeneity > 0 | Yes |
+| A | | heterogeneity > 0 | Yes |
+| p_mean | | heterogeneity > 0 | Yes |
+| p_sigma | | Always scalar | No |
+| K_gl | | Always scalar | Yes |
+| duration | | Always scalar | Yes |
+| dt | | Always scalar | Yes |
 
 ---
 
@@ -361,7 +380,7 @@ model.params['p_sigma'] = np.array([2.0, 30.0, 2.0, ...])  # 不支持
 
 ### Standard Parameters (STANDARD_PARAMETERS.py)
 
-**⚠️ Important Update (2025-10-14)**:  
+**Important Update (2025-10-14)**:  
 All 6 types now use **`p_sigma=2.0`** (verified through single-node testing).  
 This shows intrinsic dynamics without excessive noise.
 
@@ -418,5 +437,5 @@ This shows intrinsic dynamics without excessive noise.
 
 ---
 
-**Last Updated**: 2025-10-14  
+**Last Updated**: 2025-12-4  
 **Version**: neurolib wendling model (custom implementation)
