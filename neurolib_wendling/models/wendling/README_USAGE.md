@@ -44,6 +44,31 @@ signals = model.y1 - model.y2 - model.y3  # PSP (pyramidal neuron output)
 
 ## 🎛️ Key Parameters
 
+### 0. Time constants (a, b, g)
+
+The Wendling model uses **rate constants** `a`, `b`, `g` (units: `1/ms`). The corresponding **time constants** are:
+
+- **τ_a = 1/a**
+- **τ_b = 1/b**
+- **τ_g = 1/g**
+
+**Defaults (Wendling 2002)** (set in `loadDefaultParams.py`):
+
+| Parameter | Value (1/ms) | Equivalent (s⁻¹) | τ (ms) |
+|-----------|--------------|------------------|--------|
+| `a` | 0.1 | 100 | 10 |
+| `b` | 0.05 | 50 | 20 |
+| `g` | 0.5 | 500 | 2 |
+
+**Override example**:
+```python
+model.params['a'] = 0.1   # 1/ms
+model.params['b'] = 0.05  # 1/ms
+model.params['g'] = 0.5   # 1/ms
+```
+
+***
+
 ### 1. heterogeneity (Node Heterogeneity)
 
 **Purpose**: Generates random parameter variation during initialization

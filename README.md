@@ -65,6 +65,17 @@ plt.ylabel('Pyramidal Output (mV)')
 plt.show()
 ```
 
+### Time constants
+
+The model uses rate constants `a`, `b`, `g` (units: `1/ms`), with time constants `τ = 1/rate`.
+Defaults are defined in `neurolib_wendling/models/wendling/loadDefaultParams.py` and can be overridden via:
+
+```python
+model.params['a'] = 0.1
+model.params['b'] = 0.05
+model.params['g'] = 0.5
+```
+
 ## Tutorials
 
 Check out the [Wendling Tutorial notebook](tutorials/Wendling_Tutorial_Clean.ipynb) for:
